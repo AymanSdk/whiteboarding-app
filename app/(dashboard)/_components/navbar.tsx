@@ -6,7 +6,7 @@ import { InviteButton } from './invite-button';
 
 export const Navbar = () => {
 	return (
-		<div className='flex items-center p-5 gap-y-4 '>
+		<div className='flex items-center gap-x-4 p-5 '>
 			<div className='hidden lg:flex lg:flex-1 '>
 				<SearchInput />
 			</div>
