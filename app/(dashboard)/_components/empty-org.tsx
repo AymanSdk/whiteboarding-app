@@ -4,7 +4,7 @@ import { CreateOrganization } from '@clerk/nextjs';
 //? Local imports
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-
+//? Empty organization component
 export const EmptyOrg = () => {
 	return (
 		<div className='h-full flex flex-col items-center justify-center'>
