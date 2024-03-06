@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react';
 import { CreateOrganization } from '@clerk/nextjs';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Hint } from '@/components/hint';
+import { Button } from '@/components/ui/button';
 
 export const NewButton = () => {
 	return (
