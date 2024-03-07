@@ -40,3 +40,20 @@ export const create = mutation({
 		return board;
 	}
 });
+
+// ? creating of a delete mutation
+
+export const remove = mutation({
+	args: { id: v.id('boards') },
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+
+		if (!identity) {
+			throw new Error('Not authorized');
+		}
+
+		// TODO: check to delete favorite relation
+
+		await ctx.db.delete(args.id);
+	}
+});
