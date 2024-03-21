@@ -1,12 +1,6 @@
 'use client';
-import { useRenameModal } from '@/store/use-rename-modal';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { useApiMutation } from '@/hooks/use-api-mutation';
-import { api } from '@/convex/_generated/api';
-import { toast } from 'sonner';
 
+// * <-------  components Imports  ------>
 import {
 	Dialog,
 	DialogContent,
@@ -16,6 +10,15 @@ import {
 	DialogFooter,
 	DialogTitle
 } from '@/components/ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { toast } from 'sonner';
+// * <-------  server side Imports  ------>
+import { useRenameModal } from '@/store/use-rename-modal';
+import { FormEventHandler, useEffect, useState } from 'react';
+import { useApiMutation } from '@/hooks/use-api-mutation';
+import { api } from '@/convex/_generated/api';
+
 // ? <-------  Main rename functionality   ------>
 export const RenameModal = () => {
 	const { mutate, pending } = useApiMutation(api.board.update);
