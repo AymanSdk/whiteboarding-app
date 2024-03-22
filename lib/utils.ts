@@ -24,7 +24,7 @@ const COLORS = [
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
-
+// ! Function to convert connectionId to color
 export function connectionIdToColor(connectionId: number): string {
 	return COLORS[connectionId % COLORS.length];
 }
