@@ -37,5 +37,5 @@ next-env.d.ts
 
 
 # Vscode settings
-.vscode
-```
+
+/.vscode/settings.json
