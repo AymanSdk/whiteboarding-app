@@ -5,7 +5,8 @@ import {
 	useHistory,
 	useCanRedo,
 	useCanUndo,
-	useMutation
+	useMutation,
+	useStorage
 } from '@/liveblocks.config';
 import { Camera, CanvasMode, CanvasState } from '@/types/canvas';
 import { pointerEventToCanvasPoint } from '@/lib/utils';
@@ -14,12 +15,18 @@ import { Info } from './info';
 import { Participants } from './participants';
 import { Toolbar } from './toolbar';
 import { CursorsPresence } from './cursors-presence';
+import { root } from 'postcss';
 // ! < ------------------ Main Functions ------------------ >
+// * Limit the number of layers to 100 *
+const MAX_LAYERS = 100;
+
 interface CanvasProps {
 	boardId: string;
 }
 
 export const Canvas = ({ boardId }: CanvasProps) => {
+	const layerIds = useStorage((root) => root.layerIds);
+
 	const [canvasState, setCanvasState] = useState<CanvasState>({
 		mode: CanvasMode.None
 	});
