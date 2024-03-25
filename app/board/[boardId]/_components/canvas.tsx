@@ -23,7 +23,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 	const [canvasState, setCanvasState] = useState<CanvasState>({
 		mode: CanvasMode.None
 	});
-	const [Camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+	const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
 
 	const history = useHistory();
 	const canUndo = useCanUndo();
@@ -41,7 +41,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		({ setMyPresence }, e: React.PointerEvent) => {
 			e.preventDefault();
 
-			const current = pointerEventToCanvasPoint(e, Camera); // TODO: checking why this didn't accept "camera" as an argument
+			const current = pointerEventToCanvasPoint(e, camera); // TODO: checking why this didn't accept "camera" as an argument
 
 			setMyPresence({ cursor: current });
 		},
@@ -70,7 +70,11 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				onPointerMove={onPointerMove}
 				onPointerLeave={onPointerLeave}
 			>
-				<g>
+				<g
+					style={{
+						transform: `translate(${camera.x}px, ${camera.y}px)`
+					}}
+				>
 					<CursorsPresence />
 				</g>
 			</svg>
