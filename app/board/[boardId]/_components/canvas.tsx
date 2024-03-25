@@ -14,7 +14,7 @@ import { Info } from './info';
 import { Participants } from './participants';
 import { Toolbar } from './toolbar';
 import { CursorsPresence } from './cursors-presence';
-
+// ! < ------------------ Main Functions ------------------ >
 interface CanvasProps {
 	boardId: string;
 }
