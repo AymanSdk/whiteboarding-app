@@ -8,6 +8,7 @@ import {
 	useMutation
 } from '@/liveblocks.config';
 import { Camera, CanvasMode, CanvasState } from '@/types/canvas';
+import { pointerEventToCanvasPoint } from '@/lib/utils';
 // * components imports *
 import { Info } from './info';
 import { Participants } from './participants';
@@ -40,12 +41,16 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		({ setMyPresence }, e: React.PointerEvent) => {
 			e.preventDefault();
 
-			const current = { x: 0, y: 0 };
+			const current = pointerEventToCanvasPoint(e, Camera); // TODO: checking why this didn't accept "camera" as an argument
 
 			setMyPresence({ cursor: current });
 		},
 		[]
 	);
+	// ! make the cursor disappear when the user leaves the canvas
+	const onPointerLeave = useMutation(({ setMyPresence }) => {
+		setMyPresence({ cursor: null });
+	}, []);
 
 	return (
 		<main className='h-full w-full relative bg-neutral-100 touch-none'>
@@ -63,6 +68,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				className=' h-[100vh] w-[100vw]'
 				onWheel={onWheel}
 				onPointerMove={onPointerMove}
+				onPointerLeave={onPointerLeave}
 			>
 				<g>
 					<CursorsPresence />
