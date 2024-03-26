@@ -119,6 +119,21 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		setMyPresence({ cursor: null });
 	}, []);
 
+	const onPointerUp = useMutation(
+		({}, e) => {
+			const point = pointerEventToCanvasPoint(e, camera);
+
+			if (canvasState.mode === CanvasMode.Inserting) {
+				insertLayer(canvasState.layerType, point);
+			} else {
+				setCanvasState({ mode: CanvasMode.None });
+			}
+
+			history.resume();
+		},
+		[camera, canvasState, history, insertLayer]
+	);
+
 	return (
 		<main className='h-full w-full relative bg-neutral-100 touch-none'>
 			<Info boardId={boardId} />
@@ -136,6 +151,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				onWheel={onWheel}
 				onPointerMove={onPointerMove}
 				onPointerLeave={onPointerLeave}
+				onPointerUp={onPointerUp}
 			>
 				<g
 					style={{
