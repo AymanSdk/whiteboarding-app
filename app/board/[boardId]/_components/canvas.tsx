@@ -1,6 +1,7 @@
 'use client';
-// * module imports *
-import React, { useState, useCallback } from 'react';
+
+//? * module imports *
+
 import {
 	useHistory,
 	useCanRedo,
@@ -8,16 +9,32 @@ import {
 	useMutation,
 	useStorage
 } from '@/liveblocks.config';
-import { Camera, CanvasMode, CanvasState } from '@/types/canvas';
+
+import {
+	Camera,
+	CanvasMode,
+	CanvasState,
+	Color,
+	LayerType,
+	Point
+} from '@/types/canvas';
+
+import { nanoid } from 'nanoid';
 import { pointerEventToCanvasPoint } from '@/lib/utils';
-// * components imports *
+import React, { useState, useCallback } from 'react';
+import { LiveObject } from '@liveblocks/client';
+
+//? * components imports *
+
 import { Info } from './info';
 import { Participants } from './participants';
 import { Toolbar } from './toolbar';
 import { CursorsPresence } from './cursors-presence';
-import { root } from 'postcss';
+
 // ! < ------------------ Main Functions ------------------ >
+
 // * Limit the number of layers to 100 *
+
 const MAX_LAYERS = 100;
 
 interface CanvasProps {
@@ -31,10 +48,50 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		mode: CanvasMode.None
 	});
 	const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+	const [lastUsedColor, setLastUsedColor] = useState<Color>({
+		r: 0,
+		g: 0,
+		b: 0
+	});
 
 	const history = useHistory();
 	const canUndo = useCanUndo();
 	const canRedo = useCanRedo();
+
+	const insertLayer = useMutation(
+		(
+			{ storage, setMyPresence },
+			layerType:
+				| LayerType.Ellipse
+				| LayerType.Rectangle
+				| LayerType.Text
+				| LayerType.Note,
+			position: Point
+		) => {
+			const liveLayers = storage.get('layers');
+			if (liveLayers.size >= MAX_LAYERS) {
+				return;
+			}
+
+			const liveLayerIds = storage.get('layerIds');
+			const layerId = nanoid();
+			const layer = new LiveObject({
+				type: layerType,
+				x: position.x,
+				y: position.y,
+				height: 100,
+				width: 100,
+				fill: lastUsedColor
+			});
+
+			liveLayerIds.push(layerId);
+			liveLayers.set(layerId, layer); // TODO: checking why this didn't accept "layerId" as an argument
+
+			setMyPresence({ selection: [layerId] }, { addToHistory: true });
+			setCanvasState({ mode: CanvasMode.None });
+		},
+		[lastUsedColor]
+	);
 
 	const onWheel = useCallback((e: React.WheelEvent) => {
 		setCamera((camera) => ({
@@ -44,6 +101,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 	}, []);
 
 	// ! display the cursor of the user on the canvas and update it when the user moves the cursor
+
 	const onPointerMove = useMutation(
 		({ setMyPresence }, e: React.PointerEvent) => {
 			e.preventDefault();
@@ -54,7 +112,9 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 		},
 		[]
 	);
+
 	// ! make the cursor disappear when the user leaves the canvas
+
 	const onPointerLeave = useMutation(({ setMyPresence }) => {
 		setMyPresence({ cursor: null });
 	}, []);

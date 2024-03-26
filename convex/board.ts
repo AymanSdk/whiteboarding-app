@@ -1,8 +1,12 @@
 // * Provider imports
+
 import { v } from 'convex/values';
 // * Local imports
+
 import { mutation, query } from './_generated/server';
+
 // ? Images array for random image selection
+
 const images = [
 	'/placeholders/1.svg',
 	'/placeholders/2.svg',
