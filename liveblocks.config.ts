@@ -2,14 +2,14 @@ import {
 	createClient,
 	LiveList,
 	LiveMap,
-	LiveObject
+	LiveObject,
 } from '@liveblocks/client';
 import { createRoomContext, createLiveblocksContext } from '@liveblocks/react';
 import { Layer, Color } from './types/canvas';
 // ! < ------------------ functions ------------------ >
 const client = createClient({
 	throttle: 16,
-	authEndpoint: '/api/liveblocks-auth'
+	authEndpoint: '/api/liveblocks-auth',
 });
 
 //   async resolveUsers({ userIds }) {
@@ -137,14 +137,14 @@ export const {
 		useThreadSubscription,
 		useMarkThreadAsRead,
 		useRoomNotificationSettings,
-		useUpdateRoomNotificationSettings
+		useUpdateRoomNotificationSettings,
 
 		// These hooks can be exported from either context
 		// useUser,
 		// useRoomInfo
-	}
+	},
 } = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(
-	client
+	client,
 );
 
 // Project-level hooks, use inside `LiveblocksProvider`
@@ -158,6 +158,6 @@ export const {
 
 		// These hooks can be exported from either context
 		useUser,
-		useRoomInfo
-	}
+		useRoomInfo,
+	},
 } = createLiveblocksContext<UserMeta, ThreadMetadata>(client);
