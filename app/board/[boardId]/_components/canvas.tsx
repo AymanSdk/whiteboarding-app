@@ -7,7 +7,7 @@ import {
 	useCanRedo,
 	useCanUndo,
 	useMutation,
-	useStorage
+	useStorage,
 } from '@/liveblocks.config';
 
 import {
@@ -16,7 +16,7 @@ import {
 	CanvasState,
 	Color,
 	LayerType,
-	Point
+	Point,
 } from '@/types/canvas';
 
 import { nanoid } from 'nanoid';
@@ -30,6 +30,7 @@ import { Info } from './info';
 import { Participants } from './participants';
 import { Toolbar } from './toolbar';
 import { CursorsPresence } from './cursors-presence';
+import { LayerPreview } from './layer-preview';
 
 // ! < ------------------ Main Functions ------------------ >
 
@@ -42,16 +43,16 @@ interface CanvasProps {
 }
 
 export const Canvas = ({ boardId }: CanvasProps) => {
-	const layerIds = useStorage((root) => root.layerIds);
+	const layerIds = useStorage(root => root.layerIds);
 
 	const [canvasState, setCanvasState] = useState<CanvasState>({
-		mode: CanvasMode.None
+		mode: CanvasMode.None,
 	});
 	const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
 	const [lastUsedColor, setLastUsedColor] = useState<Color>({
 		r: 0,
 		g: 0,
-		b: 0
+		b: 0,
 	});
 
 	const history = useHistory();
@@ -66,7 +67,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				| LayerType.Rectangle
 				| LayerType.Text
 				| LayerType.Note,
-			position: Point
+			position: Point,
 		) => {
 			const liveLayers = storage.get('layers');
 			if (liveLayers.size >= MAX_LAYERS) {
@@ -81,7 +82,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				y: position.y,
 				height: 100,
 				width: 100,
-				fill: lastUsedColor
+				fill: lastUsedColor,
 			});
 
 			liveLayerIds.push(layerId);
@@ -90,13 +91,13 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 			setMyPresence({ selection: [layerId] }, { addToHistory: true });
 			setCanvasState({ mode: CanvasMode.None });
 		},
-		[lastUsedColor]
+		[lastUsedColor],
 	);
 
 	const onWheel = useCallback((e: React.WheelEvent) => {
-		setCamera((camera) => ({
+		setCamera(camera => ({
 			x: camera.x + e.deltaX,
-			y: camera.y + e.deltaY
+			y: camera.y + e.deltaY,
 		}));
 	}, []);
 
@@ -110,7 +111,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
 			setMyPresence({ cursor: current });
 		},
-		[]
+		[],
 	);
 
 	// ! make the cursor disappear when the user leaves the canvas
@@ -131,11 +132,11 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
 			history.resume();
 		},
-		[camera, canvasState, history, insertLayer]
+		[camera, canvasState, history, insertLayer],
 	);
 
 	return (
-		<main className='h-full w-full relative bg-neutral-100 touch-none'>
+		<main className="h-full w-full relative bg-neutral-100 touch-none">
 			<Info boardId={boardId} />
 			<Participants />
 			<Toolbar
@@ -147,7 +148,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 				redo={history.redo}
 			/>
 			<svg
-				className=' h-[100vh] w-[100vw]'
+				className=" h-[100vh] w-[100vw]"
 				onWheel={onWheel}
 				onPointerMove={onPointerMove}
 				onPointerLeave={onPointerLeave}
@@ -155,9 +156,17 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 			>
 				<g
 					style={{
-						transform: `translate(${camera.x}px, ${camera.y}px)`
+						transform: `translate(${camera.x}px, ${camera.y}px)`,
 					}}
 				>
+					{layerIds.map(layerId =>
+						<LayerPreview
+							key={layerId}
+							id={layerId}
+							onPointerDown={() => {}}
+							selectionColor="null"
+						/>,
+					)}
 					<CursorsPresence />
 				</g>
 			</svg>
