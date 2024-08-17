@@ -1,5 +1,6 @@
 "use client";
 
+import Rectangle from "@/components/rectangle";
 import { useStorage } from "@/liveblocks.config";
 import { LayerType } from "@/types/canvas";
 import { memo } from "react";
@@ -12,6 +13,7 @@ interface LayerPreviewProps {
 
 export const LayerPreview = memo(
   ({ id, onLayerPointerDown, selectionColor }: LayerPreviewProps) => {
+    // ! sat check had lkhra for query mn stoackage URGENT !!
     const layer = useStorage((root) => root.layers.get(id));
 
     if (!layer) {
@@ -20,7 +22,14 @@ export const LayerPreview = memo(
 
     switch (layer.type) {
       case LayerType.Rectangle:
-        return <div>Rectangle</div>;
+        return (
+          <Rectangle
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+          />
+        );
       default:
         console.warn("Unknown layer type");
         return null;
